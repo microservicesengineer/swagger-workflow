@@ -5,6 +5,7 @@
  */
 package com.vms.controller;
 
+import com.vms.model.ClaimTaskReqVO;
 import com.vms.model.CompleteTaskReqVO;
 import com.vms.model.QueryTaskReqVO;
 import com.vms.model.StandardResponse;
@@ -51,11 +52,11 @@ public interface UserTaskManagmentApi {
     @ApiOperation(value = "认领task", nickname = "claimTaskByID", notes = "", response = StandardResponse.class, tags={ "user task managment", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "complete user task successfully", response = StandardResponse.class) })
-    @RequestMapping(value = "/flowTask/claim/{id}",
+    @RequestMapping(value = "/flowTask/claim",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> claimTaskByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<StandardResponse> claimTaskByID(@ApiParam(value = "" ,required=true )  @Valid @RequestBody ClaimTaskReqVO claimTaskReq) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {

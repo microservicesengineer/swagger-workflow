@@ -295,7 +295,7 @@ paths:
           description: delete task successfully
           schema:
             $ref: "#/definitions/StandardResponse"          
-  /flowTask/claim/{id}:
+  /flowTask/claim:
     post:
       tags:
       - "user task managment"
@@ -307,10 +307,11 @@ paths:
       produces:
       - application/json
       parameters:
-      - name: id
-        in: path
+      - name: claimTaskReq
+        in: body
         required: true
-        type: integer
+        schema: 
+          $ref: "#/definitions/ClaimTaskReqVO"
       responses:
         200:
           description: complete user task successfully
@@ -442,6 +443,15 @@ definitions:
         type: object
         additionalProperties:
           type: object
+  ClaimTaskReqVO:
+     required: 
+        - taskId
+        - assignee
+     properties:
+      taskId:
+        type: string
+      assignee:
+        type: string
   CompleteTaskReqVO:
      required: 
         - taskId
