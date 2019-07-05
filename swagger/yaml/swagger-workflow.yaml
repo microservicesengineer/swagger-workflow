@@ -13,7 +13,7 @@ paths:
       - "bpmn process definition managment"
       summary: "上传 bpmn zip 文件部署"
       description: ""
-      operationId: uploadZip
+      operationId: deployProcessDefinitionByUploadZip
       consumes:
          - multipart/form-data
       produces:
@@ -43,7 +43,7 @@ paths:
       - "bpmn process definition managment"
       summary: "部署预定义的bpmn文件"
       description: ""
-      operationId: deployDefinedProcess
+      operationId: deployPreDefinedProcessDefinition
       consumes:
         - application/json
       produces:
@@ -68,7 +68,7 @@ paths:
       - "bpmn process definition managment"
       summary: "获取部署列表"
       description: ""
-      operationId: getDeploymentList
+      operationId: getProcessDefinitionDeploymentList
       produces:
         - application/json
       responses: 
@@ -91,7 +91,7 @@ paths:
       - "bpmn process definition managment"
       summary: "根据deployment ID查询详情"
       description: ""
-      operationId: getProcessById
+      operationId: getProcessDefinitionById
       produces:
         - application/json
       parameters: 
@@ -116,7 +116,7 @@ paths:
       - "bpmn process definition managment"
       summary: "根据deployment ID删除"
       description: ""
-      operationId: deleteProcessById
+      operationId: deleteProcessDefinitionById
       produces:
         - application/json
       parameters: 
@@ -135,7 +135,7 @@ paths:
       - "process instance managment"
       summary: "创建流程实例"
       description: ""
-      operationId: createProcess
+      operationId: createProcessInstance
       consumes:
       - application/json
       produces:
@@ -228,7 +228,7 @@ paths:
       - "process instance managment"
       summary: "根据ID查询 process instance的历史归档记录"
       description: ""
-      operationId: queryTaskHistoricalData
+      operationId: queryTaskHistoricalDataByID
       consumes:
       - application/json
       produces:
@@ -280,7 +280,7 @@ paths:
       - "user task managment"
       summary: "根据id删除user task"
       description: ""
-      operationId: deleteTask
+      operationId: deleteTaskByID
       consumes:
       - application/json
       produces:
@@ -301,7 +301,7 @@ paths:
       - "user task managment"
       summary: "认领task"
       description: ""
-      operationId: claimTask
+      operationId: claimTaskByID
       consumes:
       - application/json
       produces:
@@ -322,7 +322,7 @@ paths:
       - "user task managment"
       summary: "归还之前认领的task"
       description: ""
-      operationId: unclaimTask
+      operationId: unclaimTaskByID
       consumes:
       - application/json
       produces:

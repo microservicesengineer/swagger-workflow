@@ -49,13 +49,13 @@ public interface BpmnProcessDefinitionManagmentApi {
         return getRequest().map(r -> r.getHeader("Accept"));
     }
 
-    @ApiOperation(value = "根据deployment ID删除", nickname = "deleteProcessById", notes = "", response = StandardResponse.class, tags={ "bpmn process definition managment", })
+    @ApiOperation(value = "根据deployment ID删除", nickname = "deleteProcessDefinitionById", notes = "", response = StandardResponse.class, tags={ "bpmn process definition managment", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "get deployment by id", response = StandardResponse.class) })
     @RequestMapping(value = "/processDefinition/deploy/{id}",
         produces = { "application/json" }, 
         method = RequestMethod.DELETE)
-    default ResponseEntity<StandardResponse> deleteProcessById(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<StandardResponse> deleteProcessDefinitionById(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -72,14 +72,14 @@ public interface BpmnProcessDefinitionManagmentApi {
     }
 
 
-    @ApiOperation(value = "部署预定义的bpmn文件", nickname = "deployDefinedProcess", notes = "", response = StandardResponse.class, tags={ "bpmn process definition managment", })
+    @ApiOperation(value = "部署预定义的bpmn文件", nickname = "deployPreDefinedProcessDefinition", notes = "", response = StandardResponse.class, tags={ "bpmn process definition managment", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "upload bpmn file  successfully", response = StandardResponse.class) })
     @RequestMapping(value = "/processDefinition/deploy/predefined",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> deployDefinedProcess(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "bpmnName", required = true) String bpmnName,@ApiParam(value = "") @Valid @RequestParam(value = "category", required = false) String category) {
+    default ResponseEntity<StandardResponse> deployPreDefinedProcessDefinition(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "bpmnName", required = true) String bpmnName,@ApiParam(value = "") @Valid @RequestParam(value = "category", required = false) String category) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -96,17 +96,18 @@ public interface BpmnProcessDefinitionManagmentApi {
     }
 
 
-    @ApiOperation(value = "获取部署列表", nickname = "getDeploymentList", notes = "", response = InlineResponse200.class, tags={ "bpmn process definition managment", })
+    @ApiOperation(value = "上传 bpmn zip 文件部署", nickname = "deployProcessDefinitionByUploadZip", notes = "", response = StandardResponse.class, tags={ "bpmn process definition managment", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "get deployment list", response = InlineResponse200.class) })
-    @RequestMapping(value = "/processDefinition/deploy",
+        @ApiResponse(code = 200, message = "upload bpmn file  successfully", response = StandardResponse.class) })
+    @RequestMapping(value = "/processDefinition/deploy/upload",
         produces = { "application/json" }, 
-        method = RequestMethod.GET)
-    default ResponseEntity<InlineResponse200> getDeploymentList() {
+        consumes = { "multipart/form-data" },
+        method = RequestMethod.POST)
+    default ResponseEntity<StandardResponse> deployProcessDefinitionByUploadZip(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file,@ApiParam(value = "") @Valid @RequestParam(value = "bpmnName", required = false) String bpmnName,@ApiParam(value = "") @Valid @RequestParam(value = "category", required = false) String category) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
-                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : [ {    \"engineVersion\" : \"engineVersion\",    \"name\" : \"name\",    \"tenantId\" : \"tenantId\",    \"id\" : 6,    \"category\" : \"category\",    \"key\" : \"key\"  }, {    \"engineVersion\" : \"engineVersion\",    \"name\" : \"name\",    \"tenantId\" : \"tenantId\",    \"id\" : 6,    \"category\" : \"category\",    \"key\" : \"key\"  } ],  \"message\" : \"message\"}", InlineResponse200.class), HttpStatus.NOT_IMPLEMENTED);
+                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
                 } catch (IOException e) {
                     log.error("Couldn't serialize response for content type application/json", e);
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -119,13 +120,13 @@ public interface BpmnProcessDefinitionManagmentApi {
     }
 
 
-    @ApiOperation(value = "根据deployment ID查询详情", nickname = "getProcessById", notes = "", response = InlineResponse2001.class, tags={ "bpmn process definition managment", })
+    @ApiOperation(value = "根据deployment ID查询详情", nickname = "getProcessDefinitionById", notes = "", response = InlineResponse2001.class, tags={ "bpmn process definition managment", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "get deployment by id", response = InlineResponse2001.class) })
     @RequestMapping(value = "/processDefinition/deploy/{id}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<InlineResponse2001> getProcessById(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<InlineResponse2001> getProcessDefinitionById(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -142,18 +143,17 @@ public interface BpmnProcessDefinitionManagmentApi {
     }
 
 
-    @ApiOperation(value = "上传 bpmn zip 文件部署", nickname = "uploadZip", notes = "", response = StandardResponse.class, tags={ "bpmn process definition managment", })
+    @ApiOperation(value = "获取部署列表", nickname = "getProcessDefinitionDeploymentList", notes = "", response = InlineResponse200.class, tags={ "bpmn process definition managment", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "upload bpmn file  successfully", response = StandardResponse.class) })
-    @RequestMapping(value = "/processDefinition/deploy/upload",
+        @ApiResponse(code = 200, message = "get deployment list", response = InlineResponse200.class) })
+    @RequestMapping(value = "/processDefinition/deploy",
         produces = { "application/json" }, 
-        consumes = { "multipart/form-data" },
-        method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> uploadZip(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file,@ApiParam(value = "") @Valid @RequestParam(value = "bpmnName", required = false) String bpmnName,@ApiParam(value = "") @Valid @RequestParam(value = "category", required = false) String category) {
+        method = RequestMethod.GET)
+    default ResponseEntity<InlineResponse200> getProcessDefinitionDeploymentList() {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
-                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
+                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : [ {    \"engineVersion\" : \"engineVersion\",    \"name\" : \"name\",    \"tenantId\" : \"tenantId\",    \"id\" : 6,    \"category\" : \"category\",    \"key\" : \"key\"  }, {    \"engineVersion\" : \"engineVersion\",    \"name\" : \"name\",    \"tenantId\" : \"tenantId\",    \"id\" : 6,    \"category\" : \"category\",    \"key\" : \"key\"  } ],  \"message\" : \"message\"}", InlineResponse200.class), HttpStatus.NOT_IMPLEMENTED);
                 } catch (IOException e) {
                     log.error("Couldn't serialize response for content type application/json", e);
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -50,14 +50,14 @@ public interface ProcessInstanceManagmentApi {
         return getRequest().map(r -> r.getHeader("Accept"));
     }
 
-    @ApiOperation(value = "创建流程实例", nickname = "createProcess", notes = "", response = StandardResponse.class, tags={ "process instance managment", })
+    @ApiOperation(value = "创建流程实例", nickname = "createProcessInstance", notes = "", response = StandardResponse.class, tags={ "process instance managment", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "create instance successfully", response = StandardResponse.class) })
     @RequestMapping(value = "/processInstance",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> createProcess(@ApiParam(value = "" ,required=true )  @Valid @RequestBody StartProcessInstanceReqVO startProcessInstanceReq) {
+    default ResponseEntity<StandardResponse> createProcessInstance(@ApiParam(value = "" ,required=true )  @Valid @RequestBody StartProcessInstanceReqVO startProcessInstanceReq) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -146,14 +146,14 @@ public interface ProcessInstanceManagmentApi {
     }
 
 
-    @ApiOperation(value = "根据ID查询 process instance的历史归档记录", nickname = "queryTaskHistoricalData", notes = "", response = InlineResponse2003.class, tags={ "process instance managment", })
+    @ApiOperation(value = "根据ID查询 process instance的历史归档记录", nickname = "queryTaskHistoricalDataByID", notes = "", response = InlineResponse2003.class, tags={ "process instance managment", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "get instance historical task list", response = InlineResponse2003.class) })
     @RequestMapping(value = "/processInstance/historic/{id}",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.GET)
-    default ResponseEntity<InlineResponse2003> queryTaskHistoricalData(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<InlineResponse2003> queryTaskHistoricalDataByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
