@@ -98,7 +98,7 @@ paths:
         - name: id
           required: true
           in: path
-          type: integer
+          type: string
       responses: 
         200:
           description: "get deployment by id"
@@ -123,7 +123,7 @@ paths:
         - name: id
           required: true
           in: path
-          type: integer
+          type: string
       responses: 
         200:
           description: "get deployment by id"
@@ -430,16 +430,18 @@ definitions:
         type: string
   StartProcessInstanceReqVO:
     properties:
-      firstResult:
-        type: integer
-      maxResults:
-        type: integer
-      assignee:
+      required: 
+        - instanceKey
+      instanceKey:
         type: string
-      candidateUser:
+      applyUserId:
         type: string
-      candidateGroup:
+      businessKey:
         type: string
+      variables:
+        type: object
+        additionalProperties:
+          type: object
   CompleteTaskReqVO:
      required: 
         - taskId

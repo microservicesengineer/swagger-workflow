@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Implementation-Title: vms.workflow
 Implementation-Version: 1.0.0
-Built-By: eleven
+Built-By: alex
 Implementation-Vendor-Id: io.swagger
-Build-Jdk: 1.8.0_181
+Build-Jdk: 1.8.0_161
 Implementation-URL: http://projects.spring.io/spring-boot/vms.workflow
  /
 Created-By: Maven Integration for Eclipse

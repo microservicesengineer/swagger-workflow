@@ -55,7 +55,7 @@ public interface BpmnProcessDefinitionManagmentApi {
     @RequestMapping(value = "/processDefinition/deploy/{id}",
         produces = { "application/json" }, 
         method = RequestMethod.DELETE)
-    default ResponseEntity<StandardResponse> deleteProcessDefinitionById(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<StandardResponse> deleteProcessDefinitionById(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -126,7 +126,7 @@ public interface BpmnProcessDefinitionManagmentApi {
     @RequestMapping(value = "/processDefinition/deploy/{id}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<InlineResponse2001> getProcessDefinitionById(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<InlineResponse2001> getProcessDefinitionById(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
