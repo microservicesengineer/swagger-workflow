@@ -1,368 +1,319 @@
-swagger: "2.0"
-
-info: 
-   title: "API for VMS Workflow Managment"
-   description: "VMS Workflow Management APIs"
-   version: 1.0.0
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: API for VMS Workflow Managment
+  description: VMS Workflow Management APIs VMS Workflow Management APIs
 basePath: /api/v1
-
 paths:
-  /processDefinition/deploy/upload:
-    post:
+  /flowTask/tasks:
+    get:
+      operationId: queryTask
+      summary: 查询user task
       tags:
-      - "bpmn process definition managment"
-      summary: "上传 bpmn zip 文件部署"
-      description: ""
-      operationId: deployProcessDefinitionByUploadZip
+        - user task managment
+        - Flowtask
       consumes:
-         - multipart/form-data
+        - application/json
       produces:
-      - application/json
-      parameters:
-      - name: file
-        in: formData
-        type: file
-        description: The file to upload.
-        required: true
-      - name: bpmnName
-        in: query
-        required: false
-        type: string
-      - name: category
-        in: query
-        required: false
-        type: string
+        - application/json
       responses:
-        200:
+        '200':
           description: upload bpmn file  successfully
           schema:
-            $ref: "#/definitions/StandardResponse"
-  /processDefinition/deploy/predefined:
-    post:
+            $ref: '#/definitions/StandardResponse'
+  '/flowTask/tasks/{id}':
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    delete:
+      operationId: deleteTaskByID
+      summary: 根据id删除user task
       tags:
-      - "bpmn process definition managment"
-      summary: "部署预定义的bpmn文件"
-      description: ""
-      operationId: deployPreDefinedProcessDefinition
+        - user task managment
+        - Flowtask
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: delete task successfully
+          schema:
+            $ref: '#/definitions/StandardResponse'
+  '/flowTask/unclaim/{id}':
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    post:
+      operationId: unclaimTaskByID
+      summary: 归还之前认领的task
+      tags:
+        - user task managment
+        - Flowtask
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: complete user task successfully
+          schema:
+            $ref: '#/definitions/StandardResponse'
+  /flowTask/complete:
+    post:
+      operationId: completeTask
+      summary: '完成task(e.g. 包含assign,group users)'
+      tags:
+        - user task managment
+        - Flowtask
       consumes:
         - application/json
       produces:
         - application/json
       parameters:
-      - name: bpmnName
-        in: query
-        required: true
-        type: string
-      - name: category
-        in: query
-        required: false
-        type: string
-      responses:
-        200:
-          description: upload bpmn file  successfully
+        - name: body
+          in: body
           schema:
-            $ref: "#/definitions/StandardResponse"          
+            $ref: '#/definitions/CompleteTaskReqVO'
+      responses:
+        '200':
+          description: complete user task successfully
+          schema:
+            $ref: '#/definitions/StandardResponse'
+  /flowTask/claim:
+    post:
+      operationId: claimTaskByID
+      summary: 认领task
+      tags:
+        - user task managment
+        - Flowtask
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/ClaimTaskReqVO'
+      responses:
+        '200':
+          description: complete user task successfully
+          schema:
+            $ref: '#/definitions/StandardResponse'
   /processDefinition/deploy:
     get:
-      tags:
-      - "bpmn process definition managment"
-      summary: "获取部署列表"
-      description: ""
       operationId: getProcessDefinitionDeploymentList
-      produces:
-        - application/json
-      responses: 
-        200:
-          description: "get deployment list"
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
-              data:
-                type: array
-                items:
-                  $ref: "#/definitions/DeploymentEntity"
-  /processDefinition/deploy/{id}:
-    get:
+      summary: 获取部署列表
       tags:
-      - "bpmn process definition managment"
-      summary: "根据deployment ID查询详情"
-      description: ""
-      operationId: getProcessDefinitionById
+        - bpmn process definition managment
+        - Processdefinition
       produces:
         - application/json
-      parameters: 
-        - name: id
-          required: true
-          in: path
-          type: string
-      responses: 
-        200:
-          description: "get deployment by id"
+      responses:
+        '200':
+          description: get deployment list
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
-              data:
-                $ref: "#/definitions/DeploymentEntity"
+            $ref: '#/definitions/StandardResponse'
+  /processDefinition/deploy/upload:
+    post:
+      operationId: deployProcessDefinitionByUploadZip
+      summary: 上传 bpmn zip 文件部署
+      tags:
+        - bpmn process definition managment
+        - Processdefinition
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: bpmnName
+          in: query
+          required: false
+          type: string
+        - name: category
+          in: query
+          required: false
+          type: string
+        - name: file
+          in: formData
+          description: The file to upload.
+          required: true
+          type: file
+      responses:
+        '200':
+          description: upload bpmn file  successfully
+          schema:
+            $ref: '#/definitions/StandardResponse'
+  '/processDefinition/deploy/{id}':
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
     delete:
-      tags:
-      - "bpmn process definition managment"
-      summary: "根据deployment ID删除"
-      description: ""
       operationId: deleteProcessDefinitionById
+      summary: 根据deployment ID删除
+      tags:
+        - bpmn process definition managment
+        - Processdefinition
       produces:
         - application/json
-      parameters: 
-        - name: id
-          required: true
-          in: path
-          type: string
-      responses: 
-        200:
-          description: "get deployment by id"
+      responses:
+        '200':
+          description: get deployment by id
           schema:
-            $ref: "#/definitions/StandardResponse"
+            $ref: '#/definitions/StandardResponse'
+    get:
+      operationId: getProcessDefinitionById
+      summary: 根据deployment ID查询详情
+      tags:
+        - bpmn process definition managment
+        - Processdefinition
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: get deployment by id
+          schema:
+            $ref: '#/definitions/StandardResponse'
+  /processDefinition/deploy/predefined:
+    post:
+      operationId: deployPreDefinedProcessDefinition
+      summary: 部署预定义的bpmn文件
+      tags:
+        - bpmn process definition managment
+        - Processdefinition
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: bpmnName
+          in: query
+          required: true
+          type: string
+        - name: category
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: upload bpmn file  successfully
+          schema:
+            $ref: '#/definitions/StandardResponse'
   /processInstance:
     post:
-      tags:
-      - "process instance managment"
-      summary: "创建流程实例"
-      description: ""
       operationId: createProcessInstance
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - name: startProcessInstanceReq
-        in: body
-        required: true
-        schema:
-          $ref: "#/definitions/StartProcessInstanceReqVO"
-      responses:
-        200:
-          description: "create instance successfully"
-          schema:
-            $ref: "#/definitions/StandardResponse"
-  /processInstance/instanceKey/{key}:
-    get:
+      summary: 创建流程实例
       tags:
-      - "process instance managment"
-      summary: "根据instance key获取列表"
-      description: ""
-      operationId: queryProcessInstanceByKey
+        - process instance managment
+        - Processinstance
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
+        - application/json
       parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/StartProcessInstanceReqVO'
+      responses:
+        '200':
+          description: create instance successfully
+          schema:
+            $ref: '#/definitions/StandardResponse'
+  '/processInstance/{id}':
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+    delete:
+      operationId: deleteProcessInstanceByID
+      summary: 根据instance id删除流程实例
+      tags:
+        - process instance managment
+        - Processinstance
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: delete process instance successfully
+          schema:
+            $ref: '#/definitions/StandardResponse'
+    get:
+      operationId: queryProcessInstanceByID
+      summary: 根据instance id查看流程实例
+      tags:
+        - process instance managment
+        - Processinstance
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: get process instance list
+          schema:
+            $ref: '#/definitions/StandardResponse'
+  '/processInstance/instanceKey/{key}':
+    parameters:
       - name: key
         in: path
         required: true
         type: string
-      responses: 
-        200:
-          description: "get process instance list"
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
-              data:
-                type: array
-                items:
-                  $ref: "#/definitions/ProcessInstanceEntity"
-  /processInstance/{id}:
     get:
+      operationId: queryProcessInstanceByKey
+      summary: 根据instance key获取列表
       tags:
-      - "process instance managment"
-      summary: "根据instance id查看流程实例"
-      description: ""
-      operationId: queryProcessInstanceByID
+        - process instance managment
+        - Processinstance
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: string
-      responses: 
-        200:
-          description: "get process instance list"
-          schema:
-            $ref: "#/definitions/ProcessInstanceEntity"
-    delete:
-      tags:
-      - "process instance managment"
-      summary: "根据instance id删除流程实例"
-      description: ""
-      operationId: deleteProcessInstanceByID
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: string
+        - application/json
       responses:
-        200:
-          description: "delete process instance successfully"
+        '200':
+          description: get process instance list
           schema:
-            $ref: "#/definitions/StandardResponse"       
-  /processInstance/historic/{id}:
+            $ref: '#/definitions/StandardResponse'
+  '/processInstance/historic/{id}':
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
     get:
-      tags:
-      - "process instance managment"
-      summary: "根据ID查询 process instance的历史归档记录"
-      description: ""
       operationId: queryTaskHistoricalDataByID
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: integer
-      responses: 
-        200:
-          description: "get instance historical task list"
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
-              data:
-                type: array
-                items:
-                  $ref: "#/definitions/HistroicTaskInstance"
-  /flowTask/tasks:
-    get:
+      summary: 根据ID查询 process instance的历史归档记录
       tags:
-      - "user task managment"
-      summary: "查询user task"
-      description: ""
-      operationId: queryTask
+        - process instance managment
+        - Processinstance
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
-      parameters:
-      - name: queryTaskReq
-        in: body
-        required: true
-        schema: 
-          $ref: "#/definitions/QueryTaskReqVO"
+        - application/json
       responses:
-        200:
-          description: upload bpmn file  successfully
+        '200':
+          description: get instance historical task list
           schema:
-            $ref: "#/definitions/StandardResponse"
-  /flowTask/tasks/{id}:
-    delete:
-      tags:
-      - "user task managment"
-      summary: "根据id删除user task"
-      description: ""
-      operationId: deleteTaskByID
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: integer
-      responses:
-        200:
-          description: delete task successfully
-          schema:
-            $ref: "#/definitions/StandardResponse"          
-  /flowTask/claim:
-    post:
-      tags:
-      - "user task managment"
-      summary: "认领task"
-      description: ""
-      operationId: claimTaskByID
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - name: claimTaskReq
-        in: body
-        required: true
-        schema: 
-          $ref: "#/definitions/ClaimTaskReqVO"
-      responses:
-        200:
-          description: complete user task successfully
-          schema:
-            $ref: "#/definitions/StandardResponse"          
-  /flowTask/unclaim/{id}:
-    post:
-      tags:
-      - "user task managment"
-      summary: "归还之前认领的task"
-      description: ""
-      operationId: unclaimTaskByID
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: integer
-      responses:
-        200:
-          description: complete user task successfully
-          schema:
-            $ref: "#/definitions/StandardResponse"          
-  /flowTask/complete:
-    post:
-      tags:
-      - "user task managment"
-      summary: "完成task(e.g. 包含assign,group users)"
-      description: ""
-      operationId: completeTask
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - name: completeTaskReqVO
-        in: body
-        required: true
-        schema:
-          $ref: "#/definitions/CompleteTaskReqVO"
-      responses:
-        200:
-          description: complete user task successfully
-          schema:
-            $ref: "#/definitions/StandardResponse"
-  
-definitions: 
+            $ref: '#/definitions/StandardResponse'
+parameters:
+  'trait:thirdpartyAuthToken:thirdparty_auth_token':
+    name: thirdparty_auth_token
+    in: header
+    required: true
+    type: string
+definitions:
   DeploymentEntity:
+    title: DeploymentEntity
     properties:
       id:
         type: integer
@@ -376,7 +327,85 @@ definitions:
         type: string
       engineVersion:
         type: string
+  StartProcessInstanceReqVO:
+    title: StartProcessInstanceReqVO
+    properties:
+      required:
+        - instanceKey
+      instanceKey:
+        type: string
+      applyUserId:
+        type: string
+      businessKey:
+        type: string
+      variables:
+        type: object
+        additionalProperties:
+          type: object
+  HistroicTaskInstance:
+    title: HistroicTaskInstance
+    properties:
+      deleteReason:
+        type: string
+      startTime:
+        type: string
+        format: date-time
+      endTime:
+        type: string
+        format: date-time
+      durationInMillis:
+        type: integer
+        format: int64
+      workTimeInMillis:
+        type: integer
+        format: int64
+      claimTime:
+        type: string
+        format: date-time
+  ClaimTaskReqVO:
+    title: ClaimTaskReqVO
+    required:
+      - taskId
+      - assignee
+    properties:
+      taskId:
+        type: string
+      assignee:
+        type: string
+  StandardResponse:
+    title: StandardResponse
+    required:
+      - code
+      - message
+      - data
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      data:
+        type: object
+  CompleteTaskReqVO:
+    title: CompleteTaskReqVO
+    required:
+      - taskId
+      - assignee
+      - isReviewPass
+    properties:
+      taskId:
+        type: string
+      assignee:
+        type: string
+      isReviewPass:
+        type: integer
+      returnStart:
+        type: integer
+      variables:
+        type: object
+        additionalProperties:
+          type: object
   ProcessInstanceEntity:
+    title: ProcessInstanceEntity
     properties:
       processDefinitionId:
         type: integer
@@ -398,26 +427,8 @@ definitions:
         type: string
       startUserId:
         type: string
-  HistroicTaskInstance:
-    properties:
-      deleteReason:
-        type: string
-      startTime:
-        type: string
-        format: date-time
-      endTime:
-        type: string
-        format: date-time
-      durationInMillis:
-        type: integer
-        format: int64
-      workTimeInMillis:
-        type: integer
-        format: int64
-      claimTime:
-        type: string
-        format: date-time
   QueryTaskReqVO:
+    title: QueryTaskReqVO
     properties:
       firstResult:
         type: integer
@@ -429,66 +440,3 @@ definitions:
         type: string
       candidateGroup:
         type: string
-  StartProcessInstanceReqVO:
-    properties:
-      required: 
-        - instanceKey
-      instanceKey:
-        type: string
-      applyUserId:
-        type: string
-      businessKey:
-        type: string
-      variables:
-        type: object
-        additionalProperties:
-          type: object
-  ClaimTaskReqVO:
-     required: 
-        - taskId
-        - assignee
-     properties:
-      taskId:
-        type: string
-      assignee:
-        type: string
-  CompleteTaskReqVO:
-     required: 
-        - taskId
-        - assignee
-        - isReviewPass
-     properties:
-      taskId:
-        type: string
-      assignee:
-        type: string
-      isReviewPass:
-        type: integer
-      returnStart:
-        type: integer
-      variables:
-        type: object
-        additionalProperties: 
-          type: object
-  StandardResponse:
-    required: 
-       - code
-       - message
-       - data
-    properties:
-      code:
-        type: integer
-      message:
-        type: string
-      data:
-        type: object
-parameters:
-  thirdparty_auth_token:
-    name: thirdparty_auth_token
-    type: string
-    in: header
-    required: true
-  
-  
-
-

@@ -5,32 +5,30 @@
  */
 package com.vms.controller;
 
-import com.vms.model.ClaimTaskReqVO;
-import com.vms.model.CompleteTaskReqVO;
-import com.vms.model.QueryTaskReqVO;
-import com.vms.model.StandardResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.annotations.*;
+import java.io.IOException;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vms.model.CompleteTaskReqVO;
+import com.vms.model.StandardResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @Api(value = "UserTaskManagment", description = "the UserTaskManagment API")
 public interface UserTaskManagmentApi {
@@ -49,14 +47,14 @@ public interface UserTaskManagmentApi {
         return getRequest().map(r -> r.getHeader("Accept"));
     }
 
-    @ApiOperation(value = "认领task", nickname = "claimTaskByID", notes = "", response = StandardResponse.class, tags={ "user task managment", })
+    @ApiOperation(value = "认领task", nickname = "claimTask", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "complete user task successfully", response = StandardResponse.class) })
-    @RequestMapping(value = "/flowTask/claim",
+    @RequestMapping(value = "/flowTask/claim/{id}",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> claimTaskByID(@ApiParam(value = "" ,required=true )  @Valid @RequestBody ClaimTaskReqVO claimTaskReq) {
+    default ResponseEntity<StandardResponse> claimTask(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -73,14 +71,14 @@ public interface UserTaskManagmentApi {
     }
 
 
-    @ApiOperation(value = "完成task(e.g. 包含assign,group users)", nickname = "completeTask", notes = "", response = StandardResponse.class, tags={ "user task managment", })
+    @ApiOperation(value = "完成task(e.g. 包含assign,group users)", nickname = "completeTask", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "complete user task successfully", response = StandardResponse.class) })
     @RequestMapping(value = "/flowTask/complete",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> completeTask(@ApiParam(value = "" ,required=true )  @Valid @RequestBody CompleteTaskReqVO completeTaskReqVO) {
+    default ResponseEntity<StandardResponse> completeTask(@ApiParam(value = ""  )  @Valid @RequestBody CompleteTaskReqVO body) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -97,14 +95,14 @@ public interface UserTaskManagmentApi {
     }
 
 
-    @ApiOperation(value = "根据id删除user task", nickname = "deleteTaskByID", notes = "", response = StandardResponse.class, tags={ "user task managment", })
+    @ApiOperation(value = "根据id删除user task", nickname = "deleteTask", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "delete task successfully", response = StandardResponse.class) })
     @RequestMapping(value = "/flowTask/tasks/{id}",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.DELETE)
-    default ResponseEntity<StandardResponse> deleteTaskByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<StandardResponse> deleteTask(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -121,14 +119,14 @@ public interface UserTaskManagmentApi {
     }
 
 
-    @ApiOperation(value = "查询user task", nickname = "queryTask", notes = "", response = StandardResponse.class, tags={ "user task managment", })
+    @ApiOperation(value = "查询user task", nickname = "queryTask", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "upload bpmn file  successfully", response = StandardResponse.class) })
     @RequestMapping(value = "/flowTask/tasks",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.GET)
-    default ResponseEntity<StandardResponse> queryTask(@ApiParam(value = "" ,required=true )  @Valid @RequestBody QueryTaskReqVO queryTaskReq) {
+    default ResponseEntity<StandardResponse> queryTask() {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -145,14 +143,14 @@ public interface UserTaskManagmentApi {
     }
 
 
-    @ApiOperation(value = "归还之前认领的task", nickname = "unclaimTaskByID", notes = "", response = StandardResponse.class, tags={ "user task managment", })
+    @ApiOperation(value = "归还之前认领的task", nickname = "unclaimTask", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "complete user task successfully", response = StandardResponse.class) })
     @RequestMapping(value = "/flowTask/unclaim/{id}",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> unclaimTaskByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<StandardResponse> unclaimTask(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
