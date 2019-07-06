@@ -181,6 +181,14 @@ paths:
           description: get deployment by id
           schema:
             $ref: '#/definitions/StandardResponse'
+          examples:
+            application/json:
+              code: -48936358
+              message: Excepte
+              data:
+                entityList:
+                  - name: alex
+                  - name: decimal
   /processDefinition/deploy/predefined:
     post:
       operationId: deployPreDefinedProcessDefinition
