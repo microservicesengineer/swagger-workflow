@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -15,119 +18,105 @@ import javax.validation.constraints.*;
 @Validated
 
 public class StartProcessInstanceReqVO   {
-  @JsonProperty("firstResult")
-  private Integer firstResult = null;
+  @JsonProperty("instanceKey")
+  private String instanceKey = null;
 
-  @JsonProperty("maxResults")
-  private Integer maxResults = null;
+  @JsonProperty("applyUserId")
+  private String applyUserId = null;
 
-  @JsonProperty("assignee")
-  private String assignee = null;
+  @JsonProperty("businessKey")
+  private String businessKey = null;
 
-  @JsonProperty("candidateUser")
-  private String candidateUser = null;
+  @JsonProperty("variables")
+  @Valid
+  private Map<String, Object> variables = null;
 
-  @JsonProperty("candidateGroup")
-  private String candidateGroup = null;
-
-  public StartProcessInstanceReqVO firstResult(Integer firstResult) {
-    this.firstResult = firstResult;
+  public StartProcessInstanceReqVO instanceKey(String instanceKey) {
+    this.instanceKey = instanceKey;
     return this;
   }
 
   /**
-   * Get firstResult
-   * @return firstResult
+   * Get instanceKey
+   * @return instanceKey
   **/
   @ApiModelProperty(value = "")
 
 
-  public Integer getFirstResult() {
-    return firstResult;
+  public String getInstanceKey() {
+    return instanceKey;
   }
 
-  public void setFirstResult(Integer firstResult) {
-    this.firstResult = firstResult;
+  public void setInstanceKey(String instanceKey) {
+    this.instanceKey = instanceKey;
   }
 
-  public StartProcessInstanceReqVO maxResults(Integer maxResults) {
-    this.maxResults = maxResults;
+  public StartProcessInstanceReqVO applyUserId(String applyUserId) {
+    this.applyUserId = applyUserId;
     return this;
   }
 
   /**
-   * Get maxResults
-   * @return maxResults
+   * Get applyUserId
+   * @return applyUserId
   **/
   @ApiModelProperty(value = "")
 
 
-  public Integer getMaxResults() {
-    return maxResults;
+  public String getApplyUserId() {
+    return applyUserId;
   }
 
-  public void setMaxResults(Integer maxResults) {
-    this.maxResults = maxResults;
+  public void setApplyUserId(String applyUserId) {
+    this.applyUserId = applyUserId;
   }
 
-  public StartProcessInstanceReqVO assignee(String assignee) {
-    this.assignee = assignee;
+  public StartProcessInstanceReqVO businessKey(String businessKey) {
+    this.businessKey = businessKey;
     return this;
   }
 
   /**
-   * Get assignee
-   * @return assignee
+   * Get businessKey
+   * @return businessKey
   **/
   @ApiModelProperty(value = "")
 
 
-  public String getAssignee() {
-    return assignee;
+  public String getBusinessKey() {
+    return businessKey;
   }
 
-  public void setAssignee(String assignee) {
-    this.assignee = assignee;
+  public void setBusinessKey(String businessKey) {
+    this.businessKey = businessKey;
   }
 
-  public StartProcessInstanceReqVO candidateUser(String candidateUser) {
-    this.candidateUser = candidateUser;
+  public StartProcessInstanceReqVO variables(Map<String, Object> variables) {
+    this.variables = variables;
+    return this;
+  }
+
+  public StartProcessInstanceReqVO putVariablesItem(String key, Object variablesItem) {
+    if (this.variables == null) {
+      this.variables = new HashMap<>();
+    }
+    this.variables.put(key, variablesItem);
     return this;
   }
 
   /**
-   * Get candidateUser
-   * @return candidateUser
+   * Get variables
+   * @return variables
   **/
   @ApiModelProperty(value = "")
 
 
-  public String getCandidateUser() {
-    return candidateUser;
+  public Map<String, Object> getVariables() {
+    return variables;
   }
 
-  public void setCandidateUser(String candidateUser) {
-    this.candidateUser = candidateUser;
-  }
-
-  public StartProcessInstanceReqVO candidateGroup(String candidateGroup) {
-    this.candidateGroup = candidateGroup;
-    return this;
-  }
-
-  /**
-   * Get candidateGroup
-   * @return candidateGroup
-  **/
-  @ApiModelProperty(value = "")
-
-
-  public String getCandidateGroup() {
-    return candidateGroup;
-  }
-
-  public void setCandidateGroup(String candidateGroup) {
-    this.candidateGroup = candidateGroup;
+  public void setVariables(Map<String, Object> variables) {
+    this.variables = variables;
   }
 
 
@@ -140,16 +129,15 @@ public class StartProcessInstanceReqVO   {
       return false;
     }
     StartProcessInstanceReqVO startProcessInstanceReqVO = (StartProcessInstanceReqVO) o;
-    return Objects.equals(this.firstResult, startProcessInstanceReqVO.firstResult) &&
-        Objects.equals(this.maxResults, startProcessInstanceReqVO.maxResults) &&
-        Objects.equals(this.assignee, startProcessInstanceReqVO.assignee) &&
-        Objects.equals(this.candidateUser, startProcessInstanceReqVO.candidateUser) &&
-        Objects.equals(this.candidateGroup, startProcessInstanceReqVO.candidateGroup);
+    return Objects.equals(this.instanceKey, startProcessInstanceReqVO.instanceKey) &&
+        Objects.equals(this.applyUserId, startProcessInstanceReqVO.applyUserId) &&
+        Objects.equals(this.businessKey, startProcessInstanceReqVO.businessKey) &&
+        Objects.equals(this.variables, startProcessInstanceReqVO.variables);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(firstResult, maxResults, assignee, candidateUser, candidateGroup);
+    return Objects.hash(instanceKey, applyUserId, businessKey, variables);
   }
 
   @Override
@@ -157,11 +145,10 @@ public class StartProcessInstanceReqVO   {
     StringBuilder sb = new StringBuilder();
     sb.append("class StartProcessInstanceReqVO {\n");
     
-    sb.append("    firstResult: ").append(toIndentedString(firstResult)).append("\n");
-    sb.append("    maxResults: ").append(toIndentedString(maxResults)).append("\n");
-    sb.append("    assignee: ").append(toIndentedString(assignee)).append("\n");
-    sb.append("    candidateUser: ").append(toIndentedString(candidateUser)).append("\n");
-    sb.append("    candidateGroup: ").append(toIndentedString(candidateGroup)).append("\n");
+    sb.append("    instanceKey: ").append(toIndentedString(instanceKey)).append("\n");
+    sb.append("    applyUserId: ").append(toIndentedString(applyUserId)).append("\n");
+    sb.append("    businessKey: ").append(toIndentedString(businessKey)).append("\n");
+    sb.append("    variables: ").append(toIndentedString(variables)).append("\n");
     sb.append("}");
     return sb.toString();
   }

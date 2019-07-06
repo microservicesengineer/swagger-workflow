@@ -47,14 +47,14 @@ public interface ProcessInstanceManagmentApi {
         return getRequest().map(r -> r.getHeader("Accept"));
     }
 
-    @ApiOperation(value = "创建流程实例", nickname = "createProcess", notes = "", response = StandardResponse.class, tags={ "process instance managment","Processinstance", })
+    @ApiOperation(value = "创建流程实例", nickname = "createProcessInstance", notes = "", response = StandardResponse.class, tags={ "process instance managment","Processinstance", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "create instance successfully", response = StandardResponse.class) })
     @RequestMapping(value = "/processInstance",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> createProcess(@ApiParam(value = ""  )  @Valid @RequestBody StartProcessInstanceReqVO body) {
+    default ResponseEntity<StandardResponse> createProcessInstance(@ApiParam(value = ""  )  @Valid @RequestBody StartProcessInstanceReqVO body) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -130,7 +130,7 @@ public interface ProcessInstanceManagmentApi {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
-                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : -36543842,  \"message\" : \"enim officia culpa fugiat ex\",  \"data\" : [ {    \"startUserId\" : \"ex eiusmod \",    \"processDefinitionKey\" : \"do quis ea sunt\",    \"isSuspended\" : false,    \"processDefinitionId\" : 58013903,    \"deploymentId\" : \"reprehenderit cillum eu\",    \"processDefinitionName\" : \"nisi elit veniam non do\",    \"processDefinitionVersion\" : 158102,    \"name\" : \"ad nisi quis\"  }, {    \"processDefinitionId\" : 8501383,    \"businessKey\" : \"dolor\",    \"startUserId\" : \"dolore Lorem consequat eu in\",    \"processDefinitionVersion\" : -58834937,    \"processDefinitionKey\" : \"enim\",    \"tenantId\" : \"eiusmod nisi minim id dolor\",    \"isSuspended\" : true  }, {    \"processDefinitionName\" : \"incididunt eu esse\",    \"name\" : \"veniam aute\",    \"startUserId\" : \"do culpa quis ut\",    \"deploymentId\" : \"culpa in\",    \"processDefinitionKey\" : \"magna\"  }, {    \"startUserId\" : \"Lorem\",    \"businessKey\" : \"consequat\",    \"deploymentId\" : \"labore ex\",    \"tenantId\" : \"culpa do magna Ut dolor\",    \"processDefinitionId\" : -16335981  } ]}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
+                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
                 } catch (IOException e) {
                     log.error("Couldn't serialize response for content type application/json", e);
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -143,14 +143,14 @@ public interface ProcessInstanceManagmentApi {
     }
 
 
-    @ApiOperation(value = "根据ID查询 process instance的历史归档记录", nickname = "queryTaskHistoricalData", notes = "", response = StandardResponse.class, tags={ "process instance managment","Processinstance", })
+    @ApiOperation(value = "根据ID查询 process instance的历史归档记录", nickname = "queryTaskHistoricalDataByID", notes = "", response = StandardResponse.class, tags={ "process instance managment","Processinstance", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "get instance historical task list", response = StandardResponse.class) })
     @RequestMapping(value = "/processInstance/historic/{id}",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.GET)
-    default ResponseEntity<StandardResponse> queryTaskHistoricalData(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<StandardResponse> queryTaskHistoricalDataByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {

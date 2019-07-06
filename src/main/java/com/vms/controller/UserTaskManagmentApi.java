@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vms.model.ClaimTaskReqVO;
 import com.vms.model.CompleteTaskReqVO;
 import com.vms.model.StandardResponse;
 
@@ -47,14 +48,14 @@ public interface UserTaskManagmentApi {
         return getRequest().map(r -> r.getHeader("Accept"));
     }
 
-    @ApiOperation(value = "认领task", nickname = "claimTask", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
+    @ApiOperation(value = "认领task", nickname = "claimTaskByID", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "complete user task successfully", response = StandardResponse.class) })
-    @RequestMapping(value = "/flowTask/claim/{id}",
+    @RequestMapping(value = "/flowTask/claim",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> claimTask(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<StandardResponse> claimTaskByID(@ApiParam(value = ""  )  @Valid @RequestBody ClaimTaskReqVO body) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -95,14 +96,14 @@ public interface UserTaskManagmentApi {
     }
 
 
-    @ApiOperation(value = "根据id删除user task", nickname = "deleteTask", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
+    @ApiOperation(value = "根据id删除user task", nickname = "deleteTaskByID", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "delete task successfully", response = StandardResponse.class) })
     @RequestMapping(value = "/flowTask/tasks/{id}",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.DELETE)
-    default ResponseEntity<StandardResponse> deleteTask(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<StandardResponse> deleteTaskByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -143,14 +144,14 @@ public interface UserTaskManagmentApi {
     }
 
 
-    @ApiOperation(value = "归还之前认领的task", nickname = "unclaimTask", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
+    @ApiOperation(value = "归还之前认领的task", nickname = "unclaimTaskByID", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "complete user task successfully", response = StandardResponse.class) })
     @RequestMapping(value = "/flowTask/unclaim/{id}",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> unclaimTask(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<StandardResponse> unclaimTaskByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
