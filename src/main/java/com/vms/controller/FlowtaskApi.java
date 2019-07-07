@@ -5,37 +5,36 @@
  */
 package com.vms.controller;
 
-import java.io.IOException;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
+import com.vms.model.ClaimTaskReqVO;
+import com.vms.model.CompleteTaskReqVO;
+import com.vms.model.StandardResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vms.model.StandardResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+@Api(value = "Flowtask", description = "the Flowtask API")
+public interface FlowtaskApi {
 
-@Api(value = "BpmnProcessDefinitionManagment", description = "the BpmnProcessDefinitionManagment API")
-public interface BpmnProcessDefinitionManagmentApi {
-
-    Logger log = LoggerFactory.getLogger(BpmnProcessDefinitionManagmentApi.class);
+    Logger log = LoggerFactory.getLogger(FlowtaskApi.class);
 
     default Optional<ObjectMapper> getObjectMapper() {
         return Optional.empty();
@@ -49,37 +48,14 @@ public interface BpmnProcessDefinitionManagmentApi {
         return getRequest().map(r -> r.getHeader("Accept"));
     }
 
-    @ApiOperation(value = "根据deployment ID删除", nickname = "deleteProcessDefinitionById", notes = "", response = StandardResponse.class, tags={ "bpmn process definition managment","Processdefinition", })
+    @ApiOperation(value = "认领task", nickname = "claimTaskByID", notes = "", response = StandardResponse.class, tags={ "Flowtask", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "get deployment by id", response = StandardResponse.class) })
-    @RequestMapping(value = "/processDefinition/deploy/{id}",
-        produces = { "application/json" }, 
-        method = RequestMethod.DELETE)
-    default ResponseEntity<StandardResponse> deleteProcessDefinitionById(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
-        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-            if (getAcceptHeader().get().contains("application/json")) {
-                try {
-                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
-                } catch (IOException e) {
-                    log.error("Couldn't serialize response for content type application/json", e);
-                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            }
-        } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default BpmnProcessDefinitionManagmentApi interface so no example is generated");
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-
-    @ApiOperation(value = "部署预定义的bpmn文件", nickname = "deployPreDefinedProcessDefinition", notes = "", response = StandardResponse.class, tags={ "bpmn process definition managment","Processdefinition", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "upload bpmn file  successfully", response = StandardResponse.class) })
-    @RequestMapping(value = "/processDefinition/deploy/predefined",
+        @ApiResponse(code = 200, message = "complete user task successfully", response = StandardResponse.class) })
+    @RequestMapping(value = "/flowTask/claim",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> deployPreDefinedProcessDefinition(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "bpmnName", required = true) String bpmnName,@ApiParam(value = "") @Valid @RequestParam(value = "category", required = false) String category) {
+    default ResponseEntity<StandardResponse> claimTaskByID(@ApiParam(value = ""  )  @Valid @RequestBody ClaimTaskReqVO body) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -90,20 +66,92 @@ public interface BpmnProcessDefinitionManagmentApi {
                 }
             }
         } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default BpmnProcessDefinitionManagmentApi interface so no example is generated");
+            log.warn("ObjectMapper or HttpServletRequest not configured in default FlowtaskApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 
-    @ApiOperation(value = "上传 bpmn zip 文件部署", nickname = "deployProcessDefinitionByUploadZip", notes = "", response = StandardResponse.class, tags={ "bpmn process definition managment","Processdefinition", })
+    @ApiOperation(value = "完成task(e.g. 包含assign,group users)", nickname = "completeTask", notes = "", response = StandardResponse.class, tags={ "Flowtask", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "complete user task successfully", response = StandardResponse.class) })
+    @RequestMapping(value = "/flowTask/complete",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.POST)
+    default ResponseEntity<StandardResponse> completeTask(@ApiParam(value = ""  )  @Valid @RequestBody CompleteTaskReqVO body) {
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            if (getAcceptHeader().get().contains("application/json")) {
+                try {
+                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
+                } catch (IOException e) {
+                    log.error("Couldn't serialize response for content type application/json", e);
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default FlowtaskApi interface so no example is generated");
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+
+    @ApiOperation(value = "根据id删除user task", nickname = "deleteTaskByID", notes = "", response = StandardResponse.class, tags={ "Flowtask", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "delete task successfully", response = StandardResponse.class) })
+    @RequestMapping(value = "/flowTask/tasks/{id}",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.DELETE)
+    default ResponseEntity<StandardResponse> deleteTaskByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            if (getAcceptHeader().get().contains("application/json")) {
+                try {
+                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
+                } catch (IOException e) {
+                    log.error("Couldn't serialize response for content type application/json", e);
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default FlowtaskApi interface so no example is generated");
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+
+    @ApiOperation(value = "查询user task", nickname = "queryTask", notes = "", response = StandardResponse.class, tags={ "Flowtask", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "upload bpmn file  successfully", response = StandardResponse.class) })
-    @RequestMapping(value = "/processDefinition/deploy/upload",
+    @RequestMapping(value = "/flowTask/tasks",
         produces = { "application/json" }, 
-        consumes = { "multipart/form-data" },
+        consumes = { "application/json" },
+        method = RequestMethod.GET)
+    default ResponseEntity<StandardResponse> queryTask() {
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            if (getAcceptHeader().get().contains("application/json")) {
+                try {
+                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
+                } catch (IOException e) {
+                    log.error("Couldn't serialize response for content type application/json", e);
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default FlowtaskApi interface so no example is generated");
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+
+    @ApiOperation(value = "归还之前认领的task", nickname = "unclaimTaskByID", notes = "", response = StandardResponse.class, tags={ "Flowtask", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "complete user task successfully", response = StandardResponse.class) })
+    @RequestMapping(value = "/flowTask/unclaim/{id}",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> deployProcessDefinitionByUploadZip(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file,@ApiParam(value = "") @Valid @RequestParam(value = "bpmnName", required = false) String bpmnName,@ApiParam(value = "") @Valid @RequestParam(value = "category", required = false) String category) {
+    default ResponseEntity<StandardResponse> unclaimTaskByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -114,53 +162,7 @@ public interface BpmnProcessDefinitionManagmentApi {
                 }
             }
         } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default BpmnProcessDefinitionManagmentApi interface so no example is generated");
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-
-    @ApiOperation(value = "根据deployment ID查询详情", nickname = "getProcessDefinitionById", notes = "", response = StandardResponse.class, tags={ "bpmn process definition managment","Processdefinition", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "get deployment by id", response = StandardResponse.class) })
-    @RequestMapping(value = "/processDefinition/deploy/{id}",
-        produces = { "application/json" }, 
-        method = RequestMethod.GET)
-    default ResponseEntity<StandardResponse> getProcessDefinitionById(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
-        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-            if (getAcceptHeader().get().contains("application/json")) {
-                try {
-                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
-                } catch (IOException e) {
-                    log.error("Couldn't serialize response for content type application/json", e);
-                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            }
-        } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default BpmnProcessDefinitionManagmentApi interface so no example is generated");
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-
-    @ApiOperation(value = "获取部署列表", nickname = "getProcessDefinitionDeploymentList", notes = "", response = StandardResponse.class, tags={ "bpmn process definition managment","Processdefinition", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "get deployment list", response = StandardResponse.class) })
-    @RequestMapping(value = "/processDefinition/deploy",
-        produces = { "application/json" }, 
-        method = RequestMethod.GET)
-    default ResponseEntity<StandardResponse> getProcessDefinitionDeploymentList() {
-        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-            if (getAcceptHeader().get().contains("application/json")) {
-                try {
-                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
-                } catch (IOException e) {
-                    log.error("Couldn't serialize response for content type application/json", e);
-                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            }
-        } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default BpmnProcessDefinitionManagmentApi interface so no example is generated");
+            log.warn("ObjectMapper or HttpServletRequest not configured in default FlowtaskApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }

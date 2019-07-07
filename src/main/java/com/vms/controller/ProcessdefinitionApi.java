@@ -5,35 +5,35 @@
  */
 package com.vms.controller;
 
-import java.io.IOException;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
+import org.springframework.core.io.Resource;
+import com.vms.model.StandardResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vms.model.StandardResponse;
-import com.vms.model.StartProcessInstanceReqVO;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+@Api(value = "Processdefinition", description = "the Processdefinition API")
+public interface ProcessdefinitionApi {
 
-@Api(value = "ProcessInstanceManagment", description = "the ProcessInstanceManagment API")
-public interface ProcessInstanceManagmentApi {
-
-    Logger log = LoggerFactory.getLogger(ProcessInstanceManagmentApi.class);
+    Logger log = LoggerFactory.getLogger(ProcessdefinitionApi.class);
 
     default Optional<ObjectMapper> getObjectMapper() {
         return Optional.empty();
@@ -47,14 +47,37 @@ public interface ProcessInstanceManagmentApi {
         return getRequest().map(r -> r.getHeader("Accept"));
     }
 
-    @ApiOperation(value = "创建流程实例", nickname = "createProcessInstance", notes = "", response = StandardResponse.class, tags={ "process instance managment","Processinstance", })
+    @ApiOperation(value = "根据deployment ID删除", nickname = "deleteProcessDefinitionById", notes = "", response = StandardResponse.class, tags={ "Processdefinition", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "create instance successfully", response = StandardResponse.class) })
-    @RequestMapping(value = "/processInstance",
+        @ApiResponse(code = 200, message = "get deployment by id", response = StandardResponse.class) })
+    @RequestMapping(value = "/processDefinition/deploy/{id}",
+        produces = { "application/json" }, 
+        method = RequestMethod.DELETE)
+    default ResponseEntity<StandardResponse> deleteProcessDefinitionById(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            if (getAcceptHeader().get().contains("application/json")) {
+                try {
+                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
+                } catch (IOException e) {
+                    log.error("Couldn't serialize response for content type application/json", e);
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessdefinitionApi interface so no example is generated");
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+
+    @ApiOperation(value = "部署预定义的bpmn文件", nickname = "deployPreDefinedProcessDefinition", notes = "", response = StandardResponse.class, tags={ "Processdefinition", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "upload bpmn file  successfully", response = StandardResponse.class) })
+    @RequestMapping(value = "/processDefinition/deploy/predefined",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> createProcessInstance(@ApiParam(value = ""  )  @Valid @RequestBody StartProcessInstanceReqVO body) {
+    default ResponseEntity<StandardResponse> deployPreDefinedProcessDefinition(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "bpmnName", required = true) String bpmnName,@ApiParam(value = "") @Valid @RequestParam(value = "category", required = false) String category) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -65,20 +88,20 @@ public interface ProcessInstanceManagmentApi {
                 }
             }
         } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessInstanceManagmentApi interface so no example is generated");
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessdefinitionApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 
-    @ApiOperation(value = "根据instance id删除流程实例", nickname = "deleteProcessInstanceByID", notes = "", response = StandardResponse.class, tags={ "process instance managment","Processinstance", })
+    @ApiOperation(value = "上传 bpmn zip 文件部署", nickname = "deployProcessDefinitionByUploadZip", notes = "", response = StandardResponse.class, tags={ "Processdefinition", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "delete process instance successfully", response = StandardResponse.class) })
-    @RequestMapping(value = "/processInstance/{id}",
+        @ApiResponse(code = 200, message = "upload bpmn file  successfully", response = StandardResponse.class) })
+    @RequestMapping(value = "/processDefinition/deploy/upload",
         produces = { "application/json" }, 
-        consumes = { "application/json" },
-        method = RequestMethod.DELETE)
-    default ResponseEntity<StandardResponse> deleteProcessInstanceByID(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
+        consumes = { "multipart/form-data" },
+        method = RequestMethod.POST)
+    default ResponseEntity<StandardResponse> deployProcessDefinitionByUploadZip(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file,@ApiParam(value = "") @Valid @RequestParam(value = "bpmnName", required = false) String bpmnName,@ApiParam(value = "") @Valid @RequestParam(value = "category", required = false) String category) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -89,44 +112,42 @@ public interface ProcessInstanceManagmentApi {
                 }
             }
         } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessInstanceManagmentApi interface so no example is generated");
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessdefinitionApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 
-    @ApiOperation(value = "根据instance id查看流程实例", nickname = "queryProcessInstanceByID", notes = "", response = StandardResponse.class, tags={ "process instance managment","Processinstance", })
+    @ApiOperation(value = "根据deployment ID查询详情", nickname = "getProcessDefinitionById", notes = "", response = StandardResponse.class, tags={ "Processdefinition", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "get process instance list", response = StandardResponse.class) })
-    @RequestMapping(value = "/processInstance/{id}",
+        @ApiResponse(code = 200, message = "get deployment by id", response = StandardResponse.class) })
+    @RequestMapping(value = "/processDefinition/deploy/{id}",
         produces = { "application/json" }, 
-        consumes = { "application/json" },
         method = RequestMethod.GET)
-    default ResponseEntity<StandardResponse> queryProcessInstanceByID(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
+    default ResponseEntity<StandardResponse> getProcessDefinitionById(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
-                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
+                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 200,  \"message\" : \"Excepte\",  \"data\" : {    \"entityList\" : [ {      \"name\" : \"alex\"    }, {      \"name\" : \"decimal\"    } ]  }}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
                 } catch (IOException e) {
                     log.error("Couldn't serialize response for content type application/json", e);
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
         } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessInstanceManagmentApi interface so no example is generated");
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessdefinitionApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 
-    @ApiOperation(value = "根据instance key获取列表", nickname = "queryProcessInstanceByKey", notes = "", response = StandardResponse.class, tags={ "process instance managment","Processinstance", })
+    @ApiOperation(value = "获取部署列表", nickname = "getProcessDefinitionDeploymentList", notes = "", response = StandardResponse.class, tags={ "Processdefinition", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "get process instance list", response = StandardResponse.class) })
-    @RequestMapping(value = "/processInstance/instanceKey/{key}",
+        @ApiResponse(code = 200, message = "get deployment list", response = StandardResponse.class) })
+    @RequestMapping(value = "/processDefinition/deploy",
         produces = { "application/json" }, 
-        consumes = { "application/json" },
         method = RequestMethod.GET)
-    default ResponseEntity<StandardResponse> queryProcessInstanceByKey(@ApiParam(value = "",required=true) @PathVariable("key") String key) {
+    default ResponseEntity<StandardResponse> getProcessDefinitionDeploymentList() {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -137,31 +158,7 @@ public interface ProcessInstanceManagmentApi {
                 }
             }
         } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessInstanceManagmentApi interface so no example is generated");
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-
-    @ApiOperation(value = "根据ID查询 process instance的历史归档记录", nickname = "queryTaskHistoricalDataByID", notes = "", response = StandardResponse.class, tags={ "process instance managment","Processinstance", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "get instance historical task list", response = StandardResponse.class) })
-    @RequestMapping(value = "/processInstance/historic/{id}",
-        produces = { "application/json" }, 
-        consumes = { "application/json" },
-        method = RequestMethod.GET)
-    default ResponseEntity<StandardResponse> queryTaskHistoricalDataByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
-        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-            if (getAcceptHeader().get().contains("application/json")) {
-                try {
-                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
-                } catch (IOException e) {
-                    log.error("Couldn't serialize response for content type application/json", e);
-                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            }
-        } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessInstanceManagmentApi interface so no example is generated");
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessdefinitionApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }

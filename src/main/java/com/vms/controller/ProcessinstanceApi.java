@@ -5,36 +5,35 @@
  */
 package com.vms.controller;
 
-import java.io.IOException;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
+import com.vms.model.StandardResponse;
+import com.vms.model.StartProcessInstanceReqVO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vms.model.ClaimTaskReqVO;
-import com.vms.model.CompleteTaskReqVO;
-import com.vms.model.StandardResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+@Api(value = "Processinstance", description = "the Processinstance API")
+public interface ProcessinstanceApi {
 
-@Api(value = "UserTaskManagment", description = "the UserTaskManagment API")
-public interface UserTaskManagmentApi {
-
-    Logger log = LoggerFactory.getLogger(UserTaskManagmentApi.class);
+    Logger log = LoggerFactory.getLogger(ProcessinstanceApi.class);
 
     default Optional<ObjectMapper> getObjectMapper() {
         return Optional.empty();
@@ -48,14 +47,14 @@ public interface UserTaskManagmentApi {
         return getRequest().map(r -> r.getHeader("Accept"));
     }
 
-    @ApiOperation(value = "认领task", nickname = "claimTaskByID", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
+    @ApiOperation(value = "创建流程实例", nickname = "createProcessInstance", notes = "", response = StandardResponse.class, tags={ "Processinstance", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "complete user task successfully", response = StandardResponse.class) })
-    @RequestMapping(value = "/flowTask/claim",
+        @ApiResponse(code = 200, message = "create instance successfully", response = StandardResponse.class) })
+    @RequestMapping(value = "/processInstance",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> claimTaskByID(@ApiParam(value = ""  )  @Valid @RequestBody ClaimTaskReqVO body) {
+    default ResponseEntity<StandardResponse> createProcessInstance(@ApiParam(value = ""  )  @Valid @RequestBody StartProcessInstanceReqVO body) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -66,44 +65,20 @@ public interface UserTaskManagmentApi {
                 }
             }
         } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default UserTaskManagmentApi interface so no example is generated");
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessinstanceApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 
-    @ApiOperation(value = "完成task(e.g. 包含assign,group users)", nickname = "completeTask", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
+    @ApiOperation(value = "根据instance id删除流程实例", nickname = "deleteProcessInstanceByID", notes = "", response = StandardResponse.class, tags={ "Processinstance", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "complete user task successfully", response = StandardResponse.class) })
-    @RequestMapping(value = "/flowTask/complete",
-        produces = { "application/json" }, 
-        consumes = { "application/json" },
-        method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> completeTask(@ApiParam(value = ""  )  @Valid @RequestBody CompleteTaskReqVO body) {
-        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-            if (getAcceptHeader().get().contains("application/json")) {
-                try {
-                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
-                } catch (IOException e) {
-                    log.error("Couldn't serialize response for content type application/json", e);
-                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            }
-        } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default UserTaskManagmentApi interface so no example is generated");
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-
-    @ApiOperation(value = "根据id删除user task", nickname = "deleteTaskByID", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "delete task successfully", response = StandardResponse.class) })
-    @RequestMapping(value = "/flowTask/tasks/{id}",
+        @ApiResponse(code = 200, message = "delete process instance successfully", response = StandardResponse.class) })
+    @RequestMapping(value = "/processInstance/{id}",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.DELETE)
-    default ResponseEntity<StandardResponse> deleteTaskByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<StandardResponse> deleteProcessInstanceByID(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -114,20 +89,20 @@ public interface UserTaskManagmentApi {
                 }
             }
         } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default UserTaskManagmentApi interface so no example is generated");
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessinstanceApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 
-    @ApiOperation(value = "查询user task", nickname = "queryTask", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
+    @ApiOperation(value = "根据instance id查看流程实例", nickname = "queryProcessInstanceByID", notes = "", response = StandardResponse.class, tags={ "Processinstance", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "upload bpmn file  successfully", response = StandardResponse.class) })
-    @RequestMapping(value = "/flowTask/tasks",
+        @ApiResponse(code = 200, message = "get process instance list", response = StandardResponse.class) })
+    @RequestMapping(value = "/processInstance/{id}",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.GET)
-    default ResponseEntity<StandardResponse> queryTask() {
+    default ResponseEntity<StandardResponse> queryProcessInstanceByID(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -138,20 +113,20 @@ public interface UserTaskManagmentApi {
                 }
             }
         } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default UserTaskManagmentApi interface so no example is generated");
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessinstanceApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 
-    @ApiOperation(value = "归还之前认领的task", nickname = "unclaimTaskByID", notes = "", response = StandardResponse.class, tags={ "user task managment","Flowtask", })
+    @ApiOperation(value = "根据instance key获取列表", nickname = "queryProcessInstanceByKey", notes = "", response = StandardResponse.class, tags={ "Processinstance", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "complete user task successfully", response = StandardResponse.class) })
-    @RequestMapping(value = "/flowTask/unclaim/{id}",
+        @ApiResponse(code = 200, message = "get process instance list", response = StandardResponse.class) })
+    @RequestMapping(value = "/processInstance/instanceKey/{key}",
         produces = { "application/json" }, 
         consumes = { "application/json" },
-        method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> unclaimTaskByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+        method = RequestMethod.GET)
+    default ResponseEntity<StandardResponse> queryProcessInstanceByKey(@ApiParam(value = "",required=true) @PathVariable("key") String key) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -162,7 +137,31 @@ public interface UserTaskManagmentApi {
                 }
             }
         } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default UserTaskManagmentApi interface so no example is generated");
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessinstanceApi interface so no example is generated");
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+
+    @ApiOperation(value = "根据ID查询 process instance的历史归档记录", nickname = "queryTaskHistoricalDataByID", notes = "", response = StandardResponse.class, tags={ "Processinstance", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "get instance historical task list", response = StandardResponse.class) })
+    @RequestMapping(value = "/processInstance/historic/{id}",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.GET)
+    default ResponseEntity<StandardResponse> queryTaskHistoricalDataByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            if (getAcceptHeader().get().contains("application/json")) {
+                try {
+                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
+                } catch (IOException e) {
+                    log.error("Couldn't serialize response for content type application/json", e);
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessinstanceApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
