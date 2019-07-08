@@ -327,9 +327,8 @@ definitions:
         type: string
   StartProcessInstanceReqVO:
     title: StartProcessInstanceReqVO
+    type: object
     properties:
-      required:
-        - instanceKey
       instanceKey:
         type: string
       applyUserId:
@@ -340,6 +339,8 @@ definitions:
         type: object
         additionalProperties:
           type: object
+    required:
+      - instanceKey
   HistroicTaskInstance:
     title: HistroicTaskInstance
     properties:

@@ -40,7 +40,8 @@ public class StartProcessInstanceReqVO   {
    * Get instanceKey
    * @return instanceKey
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(required = true, value = "")
+  @NotNull
 
 
   public String getInstanceKey() {
