@@ -34,6 +34,9 @@ public class CompleteTaskReqVO   {
   @Valid
   private Map<String, Object> variables = null;
 
+  @JsonProperty("comment")
+  private String comment = null;
+
   public CompleteTaskReqVO taskId(String taskId) {
     this.taskId = taskId;
     return this;
@@ -145,6 +148,26 @@ public class CompleteTaskReqVO   {
     this.variables = variables;
   }
 
+  public CompleteTaskReqVO comment(String comment) {
+    this.comment = comment;
+    return this;
+  }
+
+  /**
+   * Get comment
+   * @return comment
+  **/
+  @ApiModelProperty(value = "")
+
+
+  public String getComment() {
+    return comment;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
+  }
+
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -159,12 +182,13 @@ public class CompleteTaskReqVO   {
         Objects.equals(this.assignee, completeTaskReqVO.assignee) &&
         Objects.equals(this.isReviewPass, completeTaskReqVO.isReviewPass) &&
         Objects.equals(this.returnStart, completeTaskReqVO.returnStart) &&
-        Objects.equals(this.variables, completeTaskReqVO.variables);
+        Objects.equals(this.variables, completeTaskReqVO.variables) &&
+        Objects.equals(this.comment, completeTaskReqVO.comment);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(taskId, assignee, isReviewPass, returnStart, variables);
+    return Objects.hash(taskId, assignee, isReviewPass, returnStart, variables, comment);
   }
 
   @Override
@@ -177,6 +201,7 @@ public class CompleteTaskReqVO   {
     sb.append("    isReviewPass: ").append(toIndentedString(isReviewPass)).append("\n");
     sb.append("    returnStart: ").append(toIndentedString(returnStart)).append("\n");
     sb.append("    variables: ").append(toIndentedString(variables)).append("\n");
+    sb.append("    comment: ").append(toIndentedString(comment)).append("\n");
     sb.append("}");
     return sb.toString();
   }

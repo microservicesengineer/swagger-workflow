@@ -7,6 +7,7 @@ package com.vms.controller;
 
 import com.vms.model.ClaimTaskReqVO;
 import com.vms.model.CompleteTaskReqVO;
+import com.vms.model.QueryTaskReqVO;
 import com.vms.model.StandardResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
@@ -127,7 +128,7 @@ public interface FlowtaskApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.GET)
-    default ResponseEntity<StandardResponse> queryTask() {
+    default ResponseEntity<StandardResponse> queryTask(@ApiParam(value = ""  )  @Valid @RequestBody QueryTaskReqVO body) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {

@@ -15,6 +15,11 @@ paths:
         - application/json
       produces:
         - application/json
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/QueryTaskReqVO'
       responses:
         '200':
           description: upload bpmn file  successfully
@@ -380,10 +385,7 @@ definitions:
         type: object
   CompleteTaskReqVO:
     title: CompleteTaskReqVO
-    required:
-      - taskId
-      - assignee
-      - isReviewPass
+    type: object
     properties:
       taskId:
         type: string
@@ -397,6 +399,12 @@ definitions:
         type: object
         additionalProperties:
           type: object
+      comment:
+        type: string
+    required:
+      - taskId
+      - assignee
+      - isReviewPass
   ProcessInstanceEntity:
     title: ProcessInstanceEntity
     properties:
