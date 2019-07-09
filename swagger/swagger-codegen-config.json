@@ -14,7 +14,7 @@
   "useOas2": false,
   "dateLibrary": "java8",
   "interfaceOnly": true,
-  "delegatePattern": false,
+  "delegatePattern": true,
   "singleContentTypes": false,
   "java8": true,
   "async": false,

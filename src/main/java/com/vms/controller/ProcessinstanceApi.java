@@ -54,7 +54,12 @@ public interface ProcessinstanceApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> createProcessInstance(@ApiParam(value = ""  )  @Valid @RequestBody StartProcessInstanceReqVO body) {
+    default ResponseEntity<StandardResponse> _createProcessInstance(@ApiParam(value = ""  )  @Valid @RequestBody StartProcessInstanceReqVO body) {
+        return createProcessInstance(body);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> createProcessInstance(StartProcessInstanceReqVO body) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -78,7 +83,12 @@ public interface ProcessinstanceApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.DELETE)
-    default ResponseEntity<StandardResponse> deleteProcessInstanceByID(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
+    default ResponseEntity<StandardResponse> _deleteProcessInstanceByID(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
+        return deleteProcessInstanceByID(id);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> deleteProcessInstanceByID(String id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -102,7 +112,12 @@ public interface ProcessinstanceApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.GET)
-    default ResponseEntity<StandardResponse> queryProcessInstanceByID(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
+    default ResponseEntity<StandardResponse> _queryProcessInstanceByID(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
+        return queryProcessInstanceByID(id);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> queryProcessInstanceByID(String id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -126,7 +141,12 @@ public interface ProcessinstanceApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.GET)
-    default ResponseEntity<StandardResponse> queryProcessInstanceByKey(@ApiParam(value = "",required=true) @PathVariable("key") String key) {
+    default ResponseEntity<StandardResponse> _queryProcessInstanceByKey(@ApiParam(value = "",required=true) @PathVariable("key") String key) {
+        return queryProcessInstanceByKey(key);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> queryProcessInstanceByKey(String key) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -150,7 +170,12 @@ public interface ProcessinstanceApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.GET)
-    default ResponseEntity<StandardResponse> queryTaskHistoricalDataByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<StandardResponse> _queryTaskHistoricalDataByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+        return queryTaskHistoricalDataByID(id);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> queryTaskHistoricalDataByID(Integer id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {

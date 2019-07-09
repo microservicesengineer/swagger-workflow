@@ -56,7 +56,12 @@ public interface FlowtaskApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> claimTaskByID(@ApiParam(value = ""  )  @Valid @RequestBody ClaimTaskReqVO body) {
+    default ResponseEntity<StandardResponse> _claimTaskByID(@ApiParam(value = ""  )  @Valid @RequestBody ClaimTaskReqVO body) {
+        return claimTaskByID(body);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> claimTaskByID(ClaimTaskReqVO body) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -80,7 +85,12 @@ public interface FlowtaskApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> completeTask(@ApiParam(value = ""  )  @Valid @RequestBody CompleteTaskReqVO body) {
+    default ResponseEntity<StandardResponse> _completeTask(@ApiParam(value = ""  )  @Valid @RequestBody CompleteTaskReqVO body) {
+        return completeTask(body);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> completeTask(CompleteTaskReqVO body) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -104,7 +114,12 @@ public interface FlowtaskApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.DELETE)
-    default ResponseEntity<StandardResponse> deleteTaskByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<StandardResponse> _deleteTaskByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+        return deleteTaskByID(id);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> deleteTaskByID(Integer id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -128,7 +143,12 @@ public interface FlowtaskApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.GET)
-    default ResponseEntity<StandardResponse> queryTask(@ApiParam(value = ""  )  @Valid @RequestBody QueryTaskReqVO body) {
+    default ResponseEntity<StandardResponse> _queryTask(@ApiParam(value = ""  )  @Valid @RequestBody QueryTaskReqVO body) {
+        return queryTask(body);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> queryTask(QueryTaskReqVO body) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -152,7 +172,12 @@ public interface FlowtaskApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> unclaimTaskByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+    default ResponseEntity<StandardResponse> _unclaimTaskByID(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+        return unclaimTaskByID(id);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> unclaimTaskByID(Integer id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {

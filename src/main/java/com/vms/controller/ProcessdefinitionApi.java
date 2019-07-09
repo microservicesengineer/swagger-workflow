@@ -53,7 +53,12 @@ public interface ProcessdefinitionApi {
     @RequestMapping(value = "/processDefinition/deploy/{id}",
         produces = { "application/json" }, 
         method = RequestMethod.DELETE)
-    default ResponseEntity<StandardResponse> deleteProcessDefinitionById(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
+    default ResponseEntity<StandardResponse> _deleteProcessDefinitionById(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
+        return deleteProcessDefinitionById(id);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> deleteProcessDefinitionById(String id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -77,7 +82,12 @@ public interface ProcessdefinitionApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> deployPreDefinedProcessDefinition(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "bpmnName", required = true) String bpmnName,@ApiParam(value = "") @Valid @RequestParam(value = "category", required = false) String category) {
+    default ResponseEntity<StandardResponse> _deployPreDefinedProcessDefinition(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "bpmnName", required = true) String bpmnName,@ApiParam(value = "") @Valid @RequestParam(value = "category", required = false) String category) {
+        return deployPreDefinedProcessDefinition(bpmnName, category);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> deployPreDefinedProcessDefinition(String bpmnName,String category) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -101,7 +111,12 @@ public interface ProcessdefinitionApi {
         produces = { "application/json" }, 
         consumes = { "multipart/form-data" },
         method = RequestMethod.POST)
-    default ResponseEntity<StandardResponse> deployProcessDefinitionByUploadZip(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file,@ApiParam(value = "") @Valid @RequestParam(value = "bpmnName", required = false) String bpmnName,@ApiParam(value = "") @Valid @RequestParam(value = "category", required = false) String category) {
+    default ResponseEntity<StandardResponse> _deployProcessDefinitionByUploadZip(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file,@ApiParam(value = "") @Valid @RequestParam(value = "bpmnName", required = false) String bpmnName,@ApiParam(value = "") @Valid @RequestParam(value = "category", required = false) String category) {
+        return deployProcessDefinitionByUploadZip(file, bpmnName, category);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> deployProcessDefinitionByUploadZip(MultipartFile file,String bpmnName,String category) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -124,7 +139,12 @@ public interface ProcessdefinitionApi {
     @RequestMapping(value = "/processDefinition/deploy/{id}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<StandardResponse> getProcessDefinitionById(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
+    default ResponseEntity<StandardResponse> _getProcessDefinitionById(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
+        return getProcessDefinitionById(id);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> getProcessDefinitionById(String id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
@@ -147,6 +167,11 @@ public interface ProcessdefinitionApi {
     @RequestMapping(value = "/processDefinition/deploy",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
+    default ResponseEntity<StandardResponse> _getProcessDefinitionDeploymentList() {
+        return getProcessDefinitionDeploymentList();
+    }
+
+    // Override this method
     default ResponseEntity<StandardResponse> getProcessDefinitionDeploymentList() {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
