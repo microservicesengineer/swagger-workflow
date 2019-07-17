@@ -5,7 +5,7 @@
   "modelPackage": "com.vms.model",
   "apiPackage": "com.vms.controller",
   "invokerPackage": "com.vms.invoker",
-  "serializableModel": false,
+  "serializableModel": true,
   "sourceFolder": "src/main/java",
   "bigDecimalAsString": true,
   "fullJavaUtil": false,
