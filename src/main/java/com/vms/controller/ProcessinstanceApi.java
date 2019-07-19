@@ -5,6 +5,7 @@
  */
 package com.vms.controller;
 
+import com.vms.model.ChangeInstanceStatusReqVO;
 import com.vms.model.StandardResponse;
 import com.vms.model.StartProcessInstanceReqVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,6 +47,35 @@ public interface ProcessinstanceApi {
     default Optional<String> getAcceptHeader() {
         return getRequest().map(r -> r.getHeader("Accept"));
     }
+
+    @ApiOperation(value = "根据ID 挂起 / 激活实例", nickname = "changeInstanctStatusById", notes = "", response = StandardResponse.class, tags={ "Processinstance", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "", response = StandardResponse.class) })
+    @RequestMapping(value = "/processInstance/status/{id}",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.PUT)
+    default ResponseEntity<StandardResponse> _changeInstanctStatusById(@ApiParam(value = "",required=true) @PathVariable("id") String id,@ApiParam(value = ""  )  @Valid @RequestBody ChangeInstanceStatusReqVO body) {
+        return changeInstanctStatusById(id, body);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> changeInstanctStatusById(String id,ChangeInstanceStatusReqVO body) {
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            if (getAcceptHeader().get().contains("application/json")) {
+                try {
+                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
+                } catch (IOException e) {
+                    log.error("Couldn't serialize response for content type application/json", e);
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessinstanceApi interface so no example is generated");
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
 
     @ApiOperation(value = "创建流程实例", nickname = "createProcessInstance", notes = "", response = StandardResponse.class, tags={ "Processinstance", })
     @ApiResponses(value = { 
@@ -89,6 +119,35 @@ public interface ProcessinstanceApi {
 
     // Override this method
     default ResponseEntity<StandardResponse> deleteProcessInstanceByID(String id) {
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            if (getAcceptHeader().get().contains("application/json")) {
+                try {
+                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
+                } catch (IOException e) {
+                    log.error("Couldn't serialize response for content type application/json", e);
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ProcessinstanceApi interface so no example is generated");
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+
+    @ApiOperation(value = "根据instance id查看变量", nickname = "getVariablesById", notes = "", response = StandardResponse.class, tags={ "Processinstance", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "", response = StandardResponse.class) })
+    @RequestMapping(value = "/processInstance/variables/{id}",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.GET)
+    default ResponseEntity<StandardResponse> _getVariablesById(@ApiParam(value = "",required=true) @PathVariable("id") String id) {
+        return getVariablesById(id);
+    }
+
+    // Override this method
+    default ResponseEntity<StandardResponse> getVariablesById(String id) {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {

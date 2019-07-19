@@ -152,7 +152,7 @@ public interface FlowtaskApi {
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
-                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 0,  \"data\" : \"{}\",  \"message\" : \"message\"}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
+                    return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"code\" : 200,  \"message\" : \"aute minim\",  \"data\" : {    \"name\" : \"alex\"  }}", StandardResponse.class), HttpStatus.NOT_IMPLEMENTED);
                 } catch (IOException e) {
                     log.error("Couldn't serialize response for content type application/json", e);
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

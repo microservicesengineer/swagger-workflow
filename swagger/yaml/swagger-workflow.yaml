@@ -25,6 +25,12 @@ paths:
           description: upload bpmn file  successfully
           schema:
             $ref: '#/definitions/StandardResponse'
+          examples:
+            application/json:
+              code: 200
+              message: aute minim
+              data:
+                name: alex
   '/flowTask/unclaim/{id}':
     parameters:
       - name: id
@@ -207,6 +213,51 @@ paths:
       responses:
         '200':
           description: upload bpmn file  successfully
+          schema:
+            $ref: '#/definitions/StandardResponse'
+  '/processInstance/status/{id}':
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+    put:
+      operationId: changeInstanctStatusById
+      summary: 根据ID 挂起 / 激活实例
+      tags:
+        - Processinstance
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/ChangeInstanceStatusReqVO'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/StandardResponse'
+  '/processInstance/variables/{id}':
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+    get:
+      operationId: getVariablesById
+      summary: 根据instance id查看变量
+      tags:
+        - Processinstance
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: ''
           schema:
             $ref: '#/definitions/StandardResponse'
   /processInstance:
@@ -442,3 +493,11 @@ definitions:
         type: string
       candidateGroup:
         type: string
+  ChangeInstanceStatusReqVO:
+    title: ChangeInstanceStatusReqVO
+    type: object
+    properties:
+      status:
+        type: integer
+    required:
+      - status
